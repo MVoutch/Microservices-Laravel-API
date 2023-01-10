@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  frontend:
+    image: maxvoutch/admin-frontend
+    depends_on:
+      - backend
+    networks:
+      - app
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: db
+      DB_DATABASE: modernize
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - app
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: ph
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - 33066:3306
+    networks:
+      - app
+
+networks:
+  app:
